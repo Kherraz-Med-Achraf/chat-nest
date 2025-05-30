@@ -6,16 +6,13 @@
     <div class="profile-card">
       <h1 class="profile-title">My Profile</h1>
 
-      <!-- Loading State -->
       <div v-if="isLoading" class="loading">Loading...</div>
 
-      <!-- Error State -->
       <div v-if="error" class="error">
         {{ error }}
         <button @click="clearError" class="error-close">×</button>
       </div>
 
-      <!-- Profile Form -->
       <form
         v-if="user && !isLoading"
         @submit.prevent="handleUpdateProfile"
@@ -83,7 +80,6 @@
           </div>
         </div>
 
-        <!-- Color Preview -->
         <div class="color-preview">
           <div
             class="preview-box"
@@ -101,7 +97,6 @@
         </button>
       </form>
 
-      <!-- Password Change Form -->
       <form
         v-if="user && !isLoading"
         @submit.prevent="handleUpdatePassword"
