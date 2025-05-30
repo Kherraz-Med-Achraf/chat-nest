@@ -7,8 +7,8 @@
       <h2>Utilisateurs En ligne</h2>
       <ul>
         <li
-          v-for="user in chat.online.filter((u) => u.id !== auth.user?.id)"
-          :key="user.id"
+            v-for="(user, index) in chat.online.filter((u) => u.id !== auth.user?.id)"
+            :key="index + user.id"
           @click="chat.startChat(user)"
           :class="{ active: chat.selectedUser?.id === user.id }"
         >

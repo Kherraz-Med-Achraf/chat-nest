@@ -10,11 +10,17 @@ export const useChatStore = defineStore("chat", () => {
   const currentRoom = ref<string | null>(null);
   const selectedUser = ref<User | null>(null);
   const newMessage = ref("");
-  
+  const isConnected = ref(false);
 
   function connect() {
+    if (isConnected.value) return;
+    isConnected.value = true;
     console.log("Connecting to chat...");
     const socket = getSocket();
+    socket.off("users.online");
+    socket.off("chat.open");
+    socket.off("chat.history");
+    socket.off("chat.message");
 
     socket.on("users.online", (users) => {
       const me = useAuthStore().user;
@@ -38,9 +44,12 @@ export const useChatStore = defineStore("chat", () => {
     socket.on("chat.message", (msg) => {
       const room =
         currentRoom.value ||
-        `${Math.min(msg.sender.id, msg.receiver.id)}-${Math.max(msg.sender.id, msg.receiver.id)}`;
+        `${Math.min(msg.sender.id, msg.receiver.id)}-${Math.max(
+          msg.sender.id,
+          msg.receiver.id
+        )}`;
       if (!history[room]) history[room] = [];
-    
+
       history[room].push(msg);
       console.log(`New message in room ${room}:`, msg);
     });
@@ -50,7 +59,6 @@ export const useChatStore = defineStore("chat", () => {
     selectedUser.value = user;
     const socket = getSocket();
     socket.emit("chat.start", { targetId: user.id });
-    
   }
 
   function sendMessage() {

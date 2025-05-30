@@ -4,7 +4,7 @@
       <button>Chat</button>
     </router-link>
     <div class="profile-card">
-      <h1 class="profile-title">My Profile</h1>
+      <h1 class="profile-title">My Profile {{ trigger }}</h1>
 
       <div v-if="isLoading" class="loading">Loading...</div>
 
@@ -14,7 +14,6 @@
       </div>
 
       <form
-        v-if="user && !isLoading"
         @submit.prevent="handleUpdateProfile"
         class="profile-form"
       >
@@ -98,7 +97,6 @@
       </form>
 
       <form
-        v-if="user && !isLoading"
         @submit.prevent="handleUpdatePassword"
         class="password-form"
       >
@@ -135,11 +133,12 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, reactive, watch } from "vue";
+import { onMounted, ref, reactive} from "vue";
 import { useUserStore } from "@/stores/user";
 import { useToast } from "vue-toastification";
 
 const toast = useToast();
+
 
 const userStore = useUserStore();
 const {
@@ -151,7 +150,6 @@ const {
   updatePassword,
   clearError,
 } = userStore;
-
 
 const profileForm = reactive({
   username: "",
@@ -167,8 +165,10 @@ const passwordForm = reactive({
 
 
 
-
 onMounted(async () => {
+  if (!userStore.user) {
+    await userStore.getMe();
+  }
   try {
     const me = await userStore.getMe();
     profileForm.username = me.username;
@@ -180,6 +180,8 @@ onMounted(async () => {
     toast.error("Impossible de charger votre profil.");
   }
 });
+
+
 
 const handleUpdateProfile = async () => {
   try {
