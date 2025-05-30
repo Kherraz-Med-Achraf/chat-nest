@@ -47,3 +47,6 @@ Thumbs.db
 
 # Optional: Ignore test coverage
 /coverage/
+
+# uploads
+/uploads/
