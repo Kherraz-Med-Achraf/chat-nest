@@ -20,7 +20,7 @@
           <input v-model="password" type="password" required />
         </div>
         <button type="submit" :disabled="loading">
-          {{ loading ? 'Connexion…' : 'Se connecter' }}
+          {{ loading ? "Connexion…" : "Se connecter" }}
         </button>
       </form>
     </div>
@@ -34,33 +34,36 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { useToast } from 'vue-toastification'
-import { useAuthStore } from '@/stores/auth'
+import { ref } from "vue";
+import { useRouter } from "vue-router";
+import { useToast } from "vue-toastification";
+import { useAuthStore } from "@/stores/auth";
+import { useChatStore } from '@/stores/chat';
 
-const pseudo = ref('')
-const password = ref('')
-const loading = ref(false)
+const pseudo = ref("");
+const password = ref("");
+const loading = ref(false);
 
-const router = useRouter()
-const toast = useToast()
-const auth = useAuthStore()
+const router = useRouter();
+const toast = useToast();
+const auth = useAuthStore();
+const chat = useChatStore();
 
 async function onSubmit() {
-  loading.value = true
+  loading.value = true;
   try {
-    await auth.login({ username: pseudo.value, password: password.value })
-    toast.success('Connecté avec succès !')
-    router.push('/home')
+    await auth.login({ username: pseudo.value, password: password.value });
+    toast.success("Connecté avec succès !");
+    chat.connect();
+    router.push("/chat");
   } catch (err: any) {
-    let msg = err.response?.data?.message || 'Échec de la connexion'
+    let msg = err.response?.data?.message || "Échec de la connexion";
     if (Array.isArray(msg)) {
-      msg = msg.join('\n')
+      msg = msg.join("\n");
     }
-    toast.error(msg)
+    toast.error(msg);
   } finally {
-    loading.value = false
+    loading.value = false;
   }
 }
 </script>

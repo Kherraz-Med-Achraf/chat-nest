@@ -1,4 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  CreateDateColumn,
+} from 'typeorm';
 import { User } from '../users/user.entity';
 
 @Entity()
@@ -6,14 +12,14 @@ export class Message {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => User, (user) => user.messages, { eager: true })
-  user: User;
+  @ManyToOne(() => User, (user) => user.sentMessages, { eager: true })
+  sender: User;
 
-  @Column({ nullable: true })
+  @ManyToOne(() => User, (user) => user.receivedMessages, { eager: true })
+  receiver: User;
+
+  @Column()
   content: string;
-
-  @Column({ nullable: true })
-  imageUrl: string;
 
   @CreateDateColumn()
   createdAt: Date;

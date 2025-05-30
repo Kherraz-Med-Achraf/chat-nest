@@ -21,6 +21,9 @@ export class User {
   @Column({ default: '#3498db' })
   colorBg: string;
 
-  @OneToMany(() => Message, (message) => message.user)
-  messages: Message[];
+  @OneToMany(() => Message, (msg) => msg.sender)
+  sentMessages: Message[];
+
+  @OneToMany(() => Message, (msg) => msg.receiver)
+  receivedMessages: Message[];
 }
