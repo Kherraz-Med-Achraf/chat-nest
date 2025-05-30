@@ -15,8 +15,11 @@ export class User {
   @Column()
   password: string; // hashed
 
+  @Column({ default: '#ffffff' })
+  colorText: string;
+
   @Column({ default: '#3498db' })
-  color: string;
+  colorBg: string;
 
   @OneToMany(() => Message, (message) => message.user)
   messages: Message[];
