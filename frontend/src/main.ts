@@ -1,13 +1,14 @@
-import './assets/main.css'
+import "./assets/main.css";
 
-import { createApp } from 'vue'
-import { createPinia } from 'pinia'
+import { createApp } from "vue";
+import { createPinia } from "pinia";
 
-import App from './App.vue'
-import router from './router'
+import App from "./App.vue";
+import router from "./router";
 
-import Toast, { POSITION } from 'vue-toastification'
-import 'vue-toastification/dist/index.css'
+import Toast, { POSITION } from "vue-toastification";
+import "vue-toastification/dist/index.css";
+import { useAuthStore } from "@/stores/auth";
 
 const toastOptions = {
   position: POSITION.TOP_RIGHT,
@@ -19,15 +20,25 @@ const toastOptions = {
   draggablePercent: 0.6,
   showCloseButtonOnHover: false,
   hideProgressBar: false,
-  closeButton: 'button',
+  closeButton: "button",
   icon: true,
   rtl: false,
+};
+
+const app = createApp(App);
+
+app.use(createPinia());
+
+const authStore = useAuthStore();
+
+if (authStore.token) {
+  try {
+    await authStore.fetchUser();
+  } catch {
+    authStore.logout();
+  }
 }
+app.use(router);
+app.use(Toast, toastOptions);
 
-const app = createApp(App)
-
-app.use(createPinia())
-app.use(router)
-app.use(Toast, toastOptions)  
-
-app.mount('#app')
+app.mount("#app");

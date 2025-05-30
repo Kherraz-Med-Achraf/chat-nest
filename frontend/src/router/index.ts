@@ -1,8 +1,8 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Register from "../views/TheRegister.vue";
 import Login from "../views/TheLogin.vue";
-import TheHome from "@/views/TheHome.vue";
 import TheChat from "@/views/TheChat.vue";
+import TheProfil from "@/views/TheProfil.vue";
 import { useAuthStore } from "@/stores/auth";
 
 const routes = [
@@ -21,15 +21,15 @@ const routes = [
     component: Login,
   },
   {
-    path: "/home",
-    name: "Home",
-    component: TheHome,
-    meta: { requiresAuth: true },
-  },
-  {
     path: "/chat",
     name: "Chat",
     component: TheChat,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/profil",
+    name: "Profil",
+    component: TheProfil,
     meta: { requiresAuth: true },
   },
 ];
@@ -40,20 +40,22 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to, from, next) => {
-  const isAuthenticated = !!localStorage.getItem("token");
   const authStore = useAuthStore();
+  const token = localStorage.getItem("token");
 
   if (to.meta.requiresAuth) {
-    if (!isAuthenticated) {
+    if (!token) {
       return next("/login");
     }
-    try {
-      await authStore.fetchUser();
-      next();
-    } catch (error) {
-      authStore.logout();
-      next("/login");
+    if (!authStore.user) {
+      try {
+        await authStore.fetchUser();
+      } catch (error) {
+        authStore.logout();
+        return next("/login");
+      }
     }
+    next();
   } else {
     next();
   }

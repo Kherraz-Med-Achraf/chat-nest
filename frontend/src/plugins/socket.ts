@@ -1,4 +1,3 @@
-// frontend/src/plugins/socket.ts
 import { io, type Socket } from "socket.io-client";
 import { useAuthStore } from "@/stores/auth";
 
@@ -7,7 +6,6 @@ let socket: Socket | null = null;
 export function getSocket(): Socket {
   const auth = useAuthStore();
 
-  // Si le token a changé, on détruit l’ancien socket
   if (socket && socket.io.opts.auth["token"] !== auth.token) {
     socket.disconnect();
     socket = null;

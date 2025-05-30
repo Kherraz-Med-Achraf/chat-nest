@@ -61,7 +61,14 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('chat.start')
   async startChat(client: Socket, { targetId }: { targetId: number }) {
+
+    
     const senderId = client.data.userId;
+
+  if (senderId === targetId) {
+    client.emit('error', { message: 'Vous ne pouvez pas démarrer une conversation avec vous-même' });
+    return;
+  }
     const room = this.chat.roomName(senderId, targetId);
 
     client.join(room);
